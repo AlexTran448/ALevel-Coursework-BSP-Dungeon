@@ -1,0 +1,110 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://World/grass_16x4.png" type="Texture" id=1]
+[ext_resource path="res://Entity/Player/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://World/Camera2D.gd" type="Script" id=3]
+[ext_resource path="res://Entity/Monster/Enemy.tscn" type="PackedScene" id=4]
+[ext_resource path="res://World/wall.png" type="Texture" id=5]
+[ext_resource path="res://Component/BSP_Dungeon.gd" type="Script" id=7]
+
+
+
+
+
+[sub_resource type="ConvexPolygonShape2D" id=1]
+points = PoolVector2Array( 16, 16, 0, 16, 0, 0, 16, 0 )
+
+[sub_resource type="StreamTexture" id=2]
+flags = 4
+
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 134.454
+
+[node name="World" type="Node2D"]
+position = Vector2( -1, 1 )
+
+[node name="Background" type="Sprite" parent="."]
+position = Vector2( -7216.83, -4233.33 )
+scale = Vector2( 14.7752, 9.84232 )
+z_as_relative = false
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 1400, 1900 )
+
+[sub_resource type="TileSet" id=3]
+0/name = "wall..png 0"
+0/texture = ExtResource( 5 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 0, 0, 16, 16 )
+0/tile_mode = 0
+0/occluder_offset = Vector2( 0, 0 )
+0/navigation_offset = Vector2( 0, 0 )
+0/shape_offset = Vector2( 0, 0 )
+0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+0/shape = SubResource( 1 )
+0/shape_one_way = false
+0/shape_one_way_margin = 1.0
+0/shapes = [ {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 1 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+} ]
+0/z_index = 0
+1/name = "floor.png 1"
+1/texture = SubResource( 2 )
+1/tex_offset = Vector2( 0, 0 )
+1/modulate = Color( 1, 1, 1, 1 )
+1/region = Rect2( 0, 0, 16, 16 )
+1/tile_mode = 0
+1/occluder_offset = Vector2( 0, 0 )
+1/navigation_offset = Vector2( 0, 0 )
+1/shape_offset = Vector2( 0, 0 )
+1/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+1/shape_one_way = false
+1/shape_one_way_margin = 0.0
+1/shapes = [  ]
+1/z_index = 0
+
+[node name="YSort" type="YSort" parent="."]
+
+[node name="Player" parent="YSort" instance=ExtResource( 2 )]
+position = Vector2( 335.075, 351.121 )
+collision_mask = 1
+ACCELERATION = 1000
+MAX_SPEED = 3000
+
+[node name="TargetArea" type="Area2D" parent="YSort/Player"]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="YSort/Player/TargetArea"]
+position = Vector2( -3.36365, 3.92672 )
+shape = SubResource( 4 )
+
+[node name="Treeant" parent="YSort" instance=ExtResource( 4 )]
+position = Vector2( 554.245, 321.354 )
+
+[node name="Treeant2" parent="YSort" instance=ExtResource( 4 )]
+position = Vector2( 584.305, 423.132 )
+
+[node name="Treeant3" parent="YSort" instance=ExtResource( 4 )]
+position = Vector2( 501.244, 181.5 )
+
+[node name="Treeant4" parent="YSort" instance=ExtResource( 4 )]
+position = Vector2( 297.368, 205.097 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+rotating = true
+current = true
+zoom = Vector2( 2, 2 )
+process_mode = 0
+smoothing_enabled = true
+script = ExtResource( 3 )
+[connection signal="send_body" from="YSort/Player" to="Camera2D" method="_on_Player_send_body"]
+[connection signal="body_entered" from="YSort/Player/TargetArea" to="Camera2D" method="_on_TargetArea_body_entered"]
+[connection signal="body_exited" from="YSort/Player/TargetArea" to="Camera2D" method="_on_TargetArea_body_exited"]
